@@ -1,9 +1,11 @@
 package pafp.model;
 
 import java.io.File;
+import java.util.Arrays;
 
 import pafp.util.FileLineIterable;
 import pafp.util.FileLineIterator;
+import pafp.util.StringUtil;
 
 public class FileModel {
 
@@ -32,7 +34,10 @@ public class FileModel {
 				location = s.split(": ")[1].split(",")[0].trim();
 			}
 			if (s.startsWith("@iteration") || s.startsWith("@split")) {
-				System.out.println(it.getLastFilledLine());
+				String lastFilledLine = it.getLastFilledLine();
+				lastFilledLine = StringUtil.normalize(lastFilledLine);
+				String[] split = lastFilledLine.split(" ");
+				System.out.println(Arrays.asList(split));	
 			}
 		}
 
