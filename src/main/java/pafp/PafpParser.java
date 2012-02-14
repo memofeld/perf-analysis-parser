@@ -95,7 +95,7 @@ public class PafpParser {
 			
 			if (s.matches("^@iteration.+")) {
 				setIteration(s);
-				sb.append(getIteration()).append(";").append(getMachine()).append(getUser()).append(";");
+				sb.append(getIteration()).append(";").append(getMachine()).append(";").append(getUser()).append(";");
 			}
 			
 			if (s.matches(".*Mittelwert = .+")) {
@@ -123,9 +123,5 @@ public class PafpParser {
 		}
 		System.out.println(sb.toString());
 		return csv;
-	}
-
-	public static void main(String args[]) {
-		new PafpParser("data1/perf-20120210-0804 Donald Duck.txt").parse();
 	}
 }
