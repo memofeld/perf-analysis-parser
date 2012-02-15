@@ -11,7 +11,7 @@ public class FileModelTest {
 
 	@Test
 	public void test() throws Exception {
-		for (File file : new File("data1").listFiles(new PerfFileFilter())) {
+		for (File file : new File("N:/perfdata").listFiles(new PerfFileFilter())) {
 			FileModel model = new FileModel(file);
 			System.out.println(model);
 		}

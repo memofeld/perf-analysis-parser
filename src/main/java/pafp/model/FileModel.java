@@ -5,13 +5,17 @@ import java.util.ArrayList;
 
 import pafp.util.FileLineIterable;
 import pafp.util.FileLineIterator;
+import pafp.util.KiloUtil;
 import pafp.util.StringUtil;
+import pafp.util.TimeUtil;
 
 public class FileModel {
 
 	private final File file;
 
 	private String location;
+	
+	private String franchise;
 
 	private String userInfo;
 
@@ -34,6 +38,7 @@ public class FileModel {
 			String s = it.next();
 			if (++count == 3) {
 				location = s.split(": ")[1].split(",")[0].trim();
+				franchise = location.replaceAll("[\\d]+$", "").replaceAll("-.+$", "");
 			}
 			if (s.startsWith("@iteration") || s.startsWith("@split")) {
 				String lastFilledLine = it.getLastFilledLine();
@@ -42,13 +47,24 @@ public class FileModel {
 				// avg ping time
 				if (split.length > 6 && split[6].equals("Mittelwert")) {
 					// store avg ping time field
-					data.add(split[8]);
+					data.add(split[8].replaceAll("ms", ""));
+				}
+				// if all packets lost set avg ping time to 0
+				else if (lastFilledLine.contains("100% Verlust")) {
+					data.add("0");
 				}
 				// download and time spent row
 				else if (split.length == 12) {
 					// store avg download and time spent fields
-					data.add(split[6]);
-					data.add(split[9]);
+					int avgDownload = KiloUtil.convert(split[6]);
+					int timeSpentSeconds = TimeUtil.toSeconds(split[9]);
+					data.add("" + avgDownload);
+					data.add("" + timeSpentSeconds);
+				}
+				// if command "curl" not found set download and time spent to 0
+				else if (lastFilledLine.contains("konnte nicht gefunden werden.")) {
+					data.add("0");
+					data.add("0");
 				}
 			}
 		}
@@ -64,6 +80,8 @@ public class FileModel {
 			out.append(i);
 			out.append(';');
 			out.append(location);
+			out.append(';');
+			out.append(franchise);
 			out.append(';');
 			out.append(userInfo);
 			out.append(';');
